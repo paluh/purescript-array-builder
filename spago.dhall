@@ -4,9 +4,9 @@
   , "assert"
   , "console"
   , "effect"
-  , "either"
-  , "exceptions"
+  , "foldable-traversable"
   , "maybe"
+  , "nullable"
   , "prelude"
   ]
 , packages = ./packages.dhall

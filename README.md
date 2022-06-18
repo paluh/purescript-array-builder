@@ -34,7 +34,9 @@ import Prelude
 -- We are working with constant sized arrays
 -- here so `unsafeBuild` is actually pretty safe ;-)
 import Data.Array ((..))
-import Data.Array.Builder (cons, snoc, unsafeBuild, (:>), (+>), (<:), (<+))
+import Data.Array.Builder (cons, snoc, unsafeBuild, (:>), (+>), (<:), (<+), build)
+import Data.Foldable (foldMap)
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Test.Assert (assert)
 ```
@@ -60,6 +62,12 @@ operators provided by the lib which "should" behave as you would expect when mix
 
 ```purescript
   assert $ unsafeBuild (-3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [2, 3] <: 4) == -3..4
+```
+
+and here is an overflow:
+
+```purescript
+  assert $ build (foldMap cons (1..20000)) == Nothing
 ```
 
 This API works nicely with tools like `Monoid.guard`, `foldMap` etc. because we have a "pretty" performant `Monoid` here.

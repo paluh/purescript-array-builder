@@ -1,11 +1,9 @@
 module Data.Array.Builder where
 
 import Prelude
-
-import Data.Either (hush)
 import Data.Maybe (Maybe)
-import Effect.Exception as EE
-import Effect.Unsafe (unsafePerformEffect)
+import Data.Nullable (Nullable)
+import Data.Nullable as Nullable
 
 newtype Builder a = Builder (Array a -> Array a)
 
@@ -77,8 +75,10 @@ cons a = Builder (unsafeCons a)
 snoc :: forall a. a -> Builder a
 snoc a = Builder (unsafeSnoc a)
 
+foreign import buildImpl :: forall a. Builder a -> Nullable (Array a)
+
 build :: forall a. Builder a -> Maybe (Array a)
-build (Builder f) = hush $ unsafePerformEffect (EE.try (pure $ f []))
+build b = Nullable.toMaybe (buildImpl b)
 
 unsafeBuild :: forall a. Builder a -> Array a
 unsafeBuild (Builder f) = f []

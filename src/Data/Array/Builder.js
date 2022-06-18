@@ -24,3 +24,11 @@ export function unsafeSnoc(a) {
     return arr;
   };
 };
+
+export function buildImpl(builder) {
+  try {
+    return builder([]);
+  } catch {
+    return null;
+  }
+}
