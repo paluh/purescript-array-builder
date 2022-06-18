@@ -10,7 +10,8 @@ import Effect.Unsafe (unsafePerformEffect)
 newtype Builder a = Builder (Array a -> Array a)
 
 instance semigroupBuilder :: Semigroup (Builder a) where
-  append (Builder b1) (Builder b2) = Builder (b1 <<< b2)
+  -- | We want to make the overhead minimal so we don't use `<<<`
+  append = appendBuilders
 
 instance monoidBuilder :: Monoid (Builder a) where
   mempty = Builder identity
@@ -25,6 +26,11 @@ foreign import unsafeSnocArray :: forall a. Array a -> Array a -> Array a
 
 appendCons :: forall a. a -> Builder a -> Builder a
 appendCons e1 e2 = cons e1 <> e2
+
+appendBuilders :: forall a. Builder a -> Builder a -> Builder a
+appendBuilders (Builder b1) (Builder b2) = Builder (\arr -> b1 (b2 arr))
+
+infixr 5 appendBuilders as <+>
 
 -- | Like a `List.Cons` - it expects
 -- | that the second argument is a `Builder`.

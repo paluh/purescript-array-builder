@@ -2,38 +2,63 @@
 
 Monoidal array builder which should have much better performance than pure concatenation because it mutates the underling array.
 
-Every `Array.Builder.cons` / `Array.Builder.snoc` or concatenation of builders `<>` is lower level JS `Array` method call
-plus overhead of additional function call on the PS side.
+Every `Array.Builder.cons` / `Array.Builder.snoc` is a one lower level JS `Array` method call.
+plus overhead of additional constructor call (`Builder`) on the PS side.
+In the case of `<>` we have an additional `Builder` call plus `Semigroup` dict lookup and call.
+If you want to avoid type class dict that you can use `appendBuilders` instead.
 
 Please be aware that `JS` engines are generaly optimized for `push` (`snoc`)
 operation - O(1) vs `unshift` (`cons`) operation - O(n).
-We have here the opposit characteristic then in the case of `Data.List`.
+We have here characteristic which is opposite to the `Data.List`.
 
 Use it for relatively small arrays (length < 10000) otherwise you can get `Nothing`...
 or just crash (stack overflow) in the case of `unsafeBuild`.
 
 ## Usage
 
-`<>` is right associative so it works like this:
+Let me start with imports. This is a part of test suite so we need them.
 
 ```purescript
-unsafeBuild $ cons 8 <> cons 9 <> cons 10 <> mempty == [8, 9, 10]
+module Test.README where
+
+import Prelude
+
+-- We are working with constant sized arrays
+-- here so `unsafeBuild` is actually pretty safe ;-)
+import Data.Array ((..))
+import Data.Array.Builder (cons, snoc, unsafeBuild, (:>), (+>), (<:), (<+))
+import Effect (Effect)
+import Test.Assert (assert)
+```
+
+`<>` is right associative and we execute its right hand
+side argument to first so it works should work in
+a pretty natural way:
+
+
+```
+suite ∷ Effect Unit
+suite = do
+  assert $ unsafeBuild (cons 8 <> cons 9 <> cons 10 <> mempty) == [8, 9, 10]
 ```
 
 and
 
 ```purescript
-unsafeBuild $ snoc 8 <> snoc 9 <> snoc 10 <> mempty == [10, 9, 8]
+  assert $ unsafeBuild (snoc 8 <> snoc 9 <> snoc 10 <> mempty) == [10, 9, 8]
 ```
 
-There are right (`:>` and `+>`) and left (`<:` and `<+`)
-associative operators provided by the lib which "should" behave
-as you would expect when mixed:
+I'm not a huge fun of custom operators but in the case of concatenation (`List`, `Array` etc.) I feel that
+they are pretty useful. So we have right (`:>` and `+>`) and left (`<:` and `<+`) associative `cons`/`snoc`
+operators provided by the lib which "should" behave as you would expect when mixed:
 
 ```purescript
-_56 = mempty <: 5 <: 6
-
-(unsafeBuild $ -3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [2, 3] <: 4 <> _56 <: 7)
+  assert $ unsafeBuild (-3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [2, 3] <: 4) == -3..4
 ```
 
 This API works nicely with tools like `Monoid.guard`, `foldMap` etc. because we have a performant `Monoid` here.
+
+## Testing
+``` shell
+$ npm test
+```
