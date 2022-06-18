@@ -8,15 +8,20 @@ Please be aware that `JS` engines are generaly optimized for `push` (`snoc`) ope
 
 ### Operation execution details
 
-Runtime cost of operations (when you execute the actual `build`):
+Runtime cost of operations - when you execute the actual `build`:
 
 * Every `Array.Builder.cons` / `Array.Builder.snoc` is a one lower level JS `Array` method call.
 
-* Every `<>` we have four "runtime" calls - type class `dict` passing call + two calls performed by `append` calls + the actual JS `Array.push` call.
+* Every `<>` is just application of one bulider on top of the result of another one - so no additional cost.
 
-* If you don't like the typeclass overhead of `<>` you can use `appendBuilders` directly which saves you one call plus a dict lookup ;-)
 
-The above operations have also "construction" cost of a one `Builder` call per operation.
+Construction cost:
+
+* All above operations have cost of a one `Builder` call per operation.
+
+* `<>` has additional cost of three calls type class `dict` passing call + two calls performed by `append` which results in composition of buliders.
+
+If you don't like the typeclass overhead of `<>` you can use `appendBuilders` directly which saves you one call and a dict lookup ;-)
 
 ## Limitations
 
@@ -61,6 +66,7 @@ they are pretty useful. So we have right (`:>` and `+>`) and left (`<:` and `<+`
 operators provided by the lib which "should" behave as you would expect when mixed:
 
 ```purescript
+  let x = (snoc 8 <> snoc 9 <> snoc 10 <> mempty)
   assert $ unsafeBuild (-3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [2, 3] <: 4) == -3..4
 ```
 
