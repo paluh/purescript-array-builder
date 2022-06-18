@@ -66,7 +66,6 @@ they are pretty useful. So we have right (`:>` and `+>`) and left (`<:` and `<+`
 operators provided by the lib which "should" behave as you would expect when mixed:
 
 ```purescript
-  let x = (snoc 8 <> snoc 9 <> snoc 10 <> mempty)
   assert $ unsafeBuild (-3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [2, 3] <: 4) == -3..4
 ```
 
