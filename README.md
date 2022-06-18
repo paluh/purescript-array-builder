@@ -6,22 +6,6 @@ Monoidal array builder which should have much better performance than pure conca
 
 Please be aware that `JS` engines are generaly optimized for `push` (`snoc`) operation - O(1) vs `unshift` (`cons`) operation - O(n). We have here characteristic which is opposite to the `Data.List`.
 
-### Operation execution details
-
-Runtime cost of operations - when you execute the actual `build`:
-
-* Every `Array.Builder.cons` / `Array.Builder.snoc` is a one lower level JS `Array` method call.
-
-* Every `<>` is just application of one bulider on top of the result of another one - so no additional cost.
-
-Construction cost:
-
-* All above operations have cost of a one `Builder` call per operation.
-
-* `<>` has additional cost of three calls type class `dict` passing call + two calls performed by `append` which results in composition of buliders.
-
-If you don't like the typeclass overhead of `<>` you can use `appendBuilders` directly which saves you one call and a dict lookup ;-)
-
 ## Limitations
 
 Use it for relatively small arrays (length < 10000) otherwise you can get `Nothing` from `build`... or just a crash (call stack overflow) in the case of `unsafeBuild`.
