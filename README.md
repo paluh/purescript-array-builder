@@ -14,7 +14,6 @@ Runtime cost of operations - when you execute the actual `build`:
 
 * Every `<>` is just application of one bulider on top of the result of another one - so no additional cost.
 
-
 Construction cost:
 
 * All above operations have cost of a one `Builder` call per operation.
@@ -42,6 +41,7 @@ import Data.Array ((..))
 import Data.Array.Builder (cons, snoc, unsafeBuild, (:>), (+>), (<:), (<+), build)
 import Data.Foldable (foldMap)
 import Data.Maybe (Maybe(..))
+import Data.Monoid as Monoid
 import Effect (Effect)
 import Test.Assert (assert)
 ```
@@ -70,13 +70,25 @@ operators provided by the lib which "should" behave as you would expect when mix
   assert $ unsafeBuild (-3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [2, 3] <: 4) == -3..4
 ```
 
-and here is an overflow:
+this API works nicely with tools like `Monoid.guard`, `foldMap` etc. because we have a "pretty" performant `Monoid` here.
+In this example we use `cons` which should be avoided in general:
 
 ```purescript
-  assert $ build (foldMap cons (1..20000)) == Nothing
+  let
+    b =
+      Monoid.guard true (cons 0)
+      <> foldMap cons (1..5)
+      <> Monoid.guard false (cons 6)
+  assert (unsafeBuild b == (0..5))
+
 ```
 
-This API works nicely with tools like `Monoid.guard`, `foldMap` etc. because we have a "pretty" performant `Monoid` here.
+
+And here is an example of overflow:
+
+```purescript
+  assert $ build (foldMap snoc (1..20000)) == Nothing
+```
 
 ## Testing
   ``` shell
