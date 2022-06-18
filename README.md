@@ -1,18 +1,12 @@
 # purescript-array-builder
 
-Monoidal array builder which should have much better performance than pure concatenation because it mutates the underling array.
+## Performance chacacteristics
 
-Every `Array.Builder.cons` / `Array.Builder.snoc` is a one lower level JS `Array` method call.
-plus overhead of additional constructor call (`Builder`) on the PS side.
-In the case of `<>` we have an additional `Builder` call plus `Semigroup` dict lookup and call.
-If you want to avoid type class dict that you can use `appendBuilders` instead.
+Please be aware that `JS` engines are generaly optimized for `push` (`snoc`) operation - O(1) vs `unshift` (`cons`) operation - O(n). We have here characteristic which is opposite to the `Data.List`.
 
-Please be aware that `JS` engines are generaly optimized for `push` (`snoc`)
-operation - O(1) vs `unshift` (`cons`) operation - O(n).
-We have here characteristic which is opposite to the `Data.List`.
+## Limitations
 
-Use it for relatively small arrays (length < 10000) otherwise you can get `Nothing`...
-or just crash (stack overflow) in the case of `unsafeBuild`.
+Use it for relatively small arrays (length < 10000) otherwise you can get `Nothing`... or just crash (call stack overflow) in the case of `unsafeBuild`.
 
 ## Usage
 
@@ -59,6 +53,20 @@ operators provided by the lib which "should" behave as you would expect when mix
 This API works nicely with tools like `Monoid.guard`, `foldMap` etc. because we have a performant `Monoid` here.
 
 ## Testing
-``` shell
-$ npm test
-```
+  ``` shell
+  $ npm test
+  ```
+
+# Operation execution details
+
+Monoidal array builder which should have much better performance than pure concatenation because it mutates the underling array.
+
+* Every `Array.Builder.cons` / `Array.Builder.snoc` is a one lower level JS `Array` method call.
+
+* Every `<>` we have four "runtime" calls - type class `dict` passing call + two calls performed by `append` calls + the actual JS `Array.push` call.
+
+* If you don't like the typeclass overhead you can use `appendBuilders` directly which saves you one call plus dict lookup ;-)
+
+The above operations have also "construction" cost of a one `Builder` call.
+
+
