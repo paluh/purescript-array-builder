@@ -1,8 +1,22 @@
 # purescript-array-builder
 
-## Performance chacacteristics
+Monoidal array builder which should have much better performance than pure concatenation because it mutates the underling array.
+
+## Performance characteristics
 
 Please be aware that `JS` engines are generaly optimized for `push` (`snoc`) operation - O(1) vs `unshift` (`cons`) operation - O(n). We have here characteristic which is opposite to the `Data.List`.
+
+### Operation execution details
+
+Runtime cost of operations (when you execute the actual `build`):
+
+* Every `Array.Builder.cons` / `Array.Builder.snoc` is a one lower level JS `Array` method call.
+
+* Every `<>` we have four "runtime" calls - type class `dict` passing call + two calls performed by `append` calls + the actual JS `Array.push` call.
+
+* If you don't like the typeclass overhead of `<>` you can use `appendBuilders` directly which saves you one call plus a dict lookup ;-)
+
+The above operations have also "construction" cost of a one `Builder` call per operation.
 
 ## Limitations
 
@@ -56,17 +70,4 @@ This API works nicely with tools like `Monoid.guard`, `foldMap` etc. because we 
   ``` shell
   $ npm test
   ```
-
-# Operation execution details
-
-Monoidal array builder which should have much better performance than pure concatenation because it mutates the underling array.
-
-* Every `Array.Builder.cons` / `Array.Builder.snoc` is a one lower level JS `Array` method call.
-
-* Every `<>` we have four "runtime" calls - type class `dict` passing call + two calls performed by `append` calls + the actual JS `Array.push` call.
-
-* If you don't like the typeclass overhead you can use `appendBuilders` directly which saves you one call plus dict lookup ;-)
-
-The above operations have also "construction" cost of a one `Builder` call.
-
 
