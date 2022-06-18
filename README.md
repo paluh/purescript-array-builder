@@ -45,9 +45,9 @@ and
   assert $ unsafeBuild (snoc 8 <> snoc 9 <> snoc 10 <> mempty) == [10, 9, 8]
 ```
 
-I'm not a huge fun of custom operators but in the case of concatenation (like `List`, `Array`) I feel that
-they are pretty useful. So we have right (`:>` and `+>`) and left (`<:` and `<+`) associative `cons`/`snoc`
-operators provided by the lib which "should" behave as you would expect when mixed:
+I'm not a huge fun of custom operators but in the case of `List` or `Array` constructors I feel that
+they are pretty useful. So we have right (`:>`, `+>` - `cons`, `consArray`) and left (`<:`, `<+` - `snoc`,`snocArray`)
+associative operators provided by the lib which "should" behave as you would expect when mixed:
 
 ```purescript
   assert $ unsafeBuild (-3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [2, 3] <: 4) == -3..4
