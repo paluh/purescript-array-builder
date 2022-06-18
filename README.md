@@ -14,9 +14,7 @@ or just crash (stack overflow) in the case of `unsafeBuild`.
 
 ## Usage
 
-`<>` is right associative and we execute its right hand
-side argument to first so it works should work in
-a pretty natural way:
+`<>` is right associative so it works like this:
 
 ```purescript
 unsafeBuild $ cons 8 <> cons 9 <> cons 10 <> mempty == [8, 9, 10]
@@ -28,12 +26,14 @@ and
 unsafeBuild $ snoc 8 <> snoc 9 <> snoc 10 <> mempty == [10, 9, 8]
 ```
 
-There are right (`:>` and `+>`) and right (`<:` and `<+`)
+There are right (`:>` and `+>`) and left (`<:` and `<+`)
 associative operators provided by the lib which "should" behave
 as you would expect when mixed:
 
 ```purescript
-unsafeBuild $ -3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [1, 2] <: 3
+_56 = mempty <: 5 <: 6
+
+(unsafeBuild $ -3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [2, 3] <: 4 <> _56 <: 7)
 ```
 
 This API works nicely with tools like `Monoid.guard`, `foldMap` etc. because we have a performant `Monoid` here.
