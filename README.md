@@ -36,7 +36,7 @@ side argument to first so it works should work in
 a pretty natural way:
 
 
-```
+```purescript
 suite ∷ Effect Unit
 suite = do
   assert $ unsafeBuild (cons 8 <> cons 9 <> cons 10 <> mempty) == [8, 9, 10]
