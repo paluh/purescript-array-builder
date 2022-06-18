@@ -24,7 +24,7 @@ Use it for relatively small arrays (length < 10000) otherwise you can get `Nothi
 
 ## Usage
 
-Let me start with imports. This is a part of test suite so we need them.
+Let me start with imports. This README is a part of the test suite so we need them.
 
 ```purescript
 module Test.README where
