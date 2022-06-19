@@ -1,0 +1,26 @@
+{
+  "name": "purescript-array-builder",
+  "version": "0.1.0",
+  "description": "Monoidal array builder for PureScript",
+  "main": "index.js",
+  "devDependencies": {
+    "paluh-litps": "^0.1.4"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "pretest": "paluh-litps compile --file README.md; mv README.purs test/README.purs",
+    "test": "spago test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paluh/purescript-array-builder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paluh/purescript-array-builder/issues"
+  },
+  "homepage": "https://github.com/paluh/purescript-array-builder#readme"
+}
