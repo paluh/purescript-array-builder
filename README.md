@@ -22,7 +22,7 @@ import Prelude
 -- We are working with constant sized arrays
 -- here so `unsafeBuild` is actually pretty safe ;-)
 import Data.Array ((..))
-import Data.Array.Builder (cons, snoc, unsafeBuild, (:>), (+>), (<:), (<+), build)
+import Data.Array.Builder (cons, consArray, snoc, snocArray, unsafeBuild, (:>), (+>), (<:), (<+), build)
 import Data.Foldable (foldMap)
 import Data.Maybe (Maybe(..))
 import Data.Monoid as Monoid
@@ -59,19 +59,26 @@ In this example we use `cons` which should be avoided in general:
 ```purescript
   let
     b =
-      Monoid.guard true (cons 0)
-      <> foldMap cons (1..5)
-      <> Monoid.guard false (cons 6)
-  assert (unsafeBuild b == (0..5))
+      snoc 5
+      <> Monoid.guard true (snocArray [3, 4])
+      <> snoc 2
+      <> foldMap snoc (Just 1)
+      <> Monoid.guard false (cons 0)
+
+  assert (unsafeBuild b == (1..5))
 
 ```
+The above example uses consistently more performant `snoc*` operations - mixing `cons*`, `snoc*` and `<>` can be tricky sometimes
+because we have to think about the order of the actual operations...
+But I prefer my fancy operators. Everyone loves his own operators ;-)
 
-
-And here is an example of overflow:
+"And now for something completely different..." Let's blow up the stack:
 
 ```purescript
   assert $ build (foldMap snoc (1..20000)) == Nothing
 ```
+
+Nice!
 
 ## Testing
   ``` shell
