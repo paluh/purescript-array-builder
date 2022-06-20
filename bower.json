@@ -1,26 +1,26 @@
 {
-    "name": "purescript-array-builder",
-    "license": [
-        "BSD-3-Clause"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/paluh/array-builder.git"
-    },
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "bower_components",
-        "output"
-    ],
-    "dependencies": {
-        "purescript-arrays": "^v7.0.0",
-        "purescript-assert": "^v6.0.0",
-        "purescript-console": "^v6.0.0",
-        "purescript-effect": "^v4.0.0",
-        "purescript-foldable-traversable": "^v6.0.0",
-        "purescript-maybe": "^v6.0.0",
-        "purescript-nullable": "^v6.0.0",
-        "purescript-prelude": "^v6.0.0"
-    }
+  "name": "purescript-array-builder",
+  "license": [
+    "BSD-3-Clause"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paluh/purescript-array-builder.git"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-arrays": "^v7.0.0",
+    "purescript-assert": "^v6.0.0",
+    "purescript-console": "^v6.0.0",
+    "purescript-effect": "^v4.0.0",
+    "purescript-foldable-traversable": "^v6.0.0",
+    "purescript-maybe": "^v6.0.0",
+    "purescript-nullable": "^v6.0.0",
+    "purescript-prelude": "^v6.0.0"
+  }
 }
