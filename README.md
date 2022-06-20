@@ -53,13 +53,14 @@ associative operators provided by the lib which "should" behave as you would exp
   assert $ unsafeBuild (-3 :> [-2, -1] +> 0 :> mempty <: 1 <+ [2, 3] <: 4) == -3..4
 ```
 
-this API works nicely with tools like `Monoid.guard`, `foldMap` etc. because we have a "pretty" performant `Monoid` here.
-In this example we use `cons` which should be avoided in general:
+this API works nicely with tools like `Monoid.guard`, `foldMap` etc. because we have a "pretty" performant `Monoid` here:
 
 ```purescript
   let
     b =
       snoc 5
+      -- | It could be `foldMap snoc [3, 4]` as well
+      -- | but `snocArray` is a single `push`.
       <> Monoid.guard true (snocArray [3, 4])
       <> snoc 2
       <> foldMap snoc (Just 1)
@@ -70,7 +71,8 @@ In this example we use `cons` which should be avoided in general:
 ```
 The above example uses consistently more performant `snoc*` operations - mixing `cons*`, `snoc*` and `<>` can be tricky sometimes
 because we have to think about the order of the actual operations...
-But I prefer my fancy operators. Everyone loves his own operators ;-)
+So I prefer my fancy operators. Everyones loves their own lovely, clean and consistent operators and...
+not like the others ugly, unkown and unreadable operators ;-)
 
 "And now for something completely different..." Let's blow up the stack:
 
